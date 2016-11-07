@@ -85,5 +85,4 @@ class TechXpoRoutine(Routine.Routine):
 #class TechXpoRoutine
 
 techxpo = TechXpoRoutine()
-techxpo.connect("127.0.0.1", 57770)
 techxpo.run()

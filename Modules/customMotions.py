@@ -51,24 +51,7 @@ class customMotions():
         postureProxy.goToPosture("Sit", speed)
     #def standUp    
     
-    def wave(self, motionProxy, async):
-        #names = ["RShoulderRoll", "RShoulderPitch", "RElbowYaw", "RWristYaw", "RElbowRoll"]
-
-        #motionProxy.openHand("RHand")
-        #angleLists = [[-75.0], [0.0], [60.0], [60.0], [0.0, 87.0, 0.0, 87.0]]
-        #angleLists = [[math.radians(angle) for angle in x] for x in angleLists]
-        #timeLists = [[1.0], [1.0], [1.0], [1.0], [1.0, 1.5, 2.0, 2.5]]
-        #isAbsolute = True
-        #motionProxy.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-
-        #names = ["RShoulderRoll", "RShoulderPitch", "RElbowYaw","RWristYaw", "RElbowRoll"]
-        #angleLists = [0.0, 100.0, 0.0, 0.0, 3.0]
-        #angleLists = [math.radians(x) for x in angleLists]
-        #timeLists = [[1.0], [1.0], [1.0], [1.0], [1.0]]
-        #isAbsolute = True
-        #motionProxy.closeHand("RHand")
-        #motionProxy.angleInterpolation(names, angleLists, timeLists, isAbsolute)
-        
+    def wave(self, motionProxy, async):        
         names = list()
         times = list()
         keys = list()
