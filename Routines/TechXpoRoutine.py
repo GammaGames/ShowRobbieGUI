@@ -83,6 +83,3 @@ class TechXpoRoutine(Routine.Routine):
     #def stop
 
 #class TechXpoRoutine
-
-techxpo = TechXpoRoutine()
-techxpo.run()
