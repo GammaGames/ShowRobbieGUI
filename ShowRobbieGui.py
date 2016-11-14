@@ -59,7 +59,7 @@ class ShowRobbieGui(object):
         '''
         '''
         self.createComponents()
-        self.packAndConfigureWindow()
+        self.configureWindow()
         self.window.mainloop()
         
     #def __init__
@@ -107,7 +107,7 @@ class ShowRobbieGui(object):
                 
     #def createComponents
     
-    def packAndConfigureWindow(self):
+    def configureWindow(self):
         self.window.rowconfigure(1, weight = 1)
 
         # Pack routines list
