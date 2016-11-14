@@ -34,20 +34,25 @@ class ShowRobbieGui(object):
     # Create element variables 
     window = None
     
+    routinesFrame = None
     availableRoutinesLabel = None
     availableRoutines = None
     availableRoutinesScrollbar = None
     
+    connectFrame = None
     connectLabel = None
     connectIP = None
     connectPort = None
     connectButton = None
-    videoFeed = None
+    
     batteryBar = None
     
-    progressBar = None
+    controlsFrame = None
+    videoFeed = None
+    videoFeedLabel = None
     playButton = None
     stopButton = None
+    progressBar = None
     
     routines = {}
     routineFilesToIgnore = {
@@ -70,26 +75,31 @@ class ShowRobbieGui(object):
         self.window = Tk("ShowRobbie")
         
         # Create Routine components
-        self.availableRoutinesLabel = Label(self.window, text="Routines")
-        self.availableRoutinesScrollbar = Scrollbar(self.window)
-        self.availableRoutines = Listbox(self.window, 
+        self.routinesFrame = Frame(self.window)
+        self.availableRoutinesLabel = Label(self.routinesFrame, text="Routines")
+        self.availableRoutinesScrollbar = Scrollbar(self.routinesFrame)
+        self.availableRoutines = Listbox(self.routinesFrame, 
             yscrollcommand = self.availableRoutinesScrollbar.set)
         
         # Create connection components
-        self.connectLabel = Label(self.window, text="Connect")
-        self.connectIP = Entry(self.window, textvariable = "10.0.0.7 ")
-        self.connectPort = Entry(self.window, textvariable = "9559")
-        self.connectButton = Button(self.window, text = "Connect")
+        self.connectFrame = Frame(self.window)
+        self.connectLabel = Label(self.connectFrame, text="Connection")
+        self.connectIP = Entry(self.connectFrame, textvariable = "10.0.0.7 ")
+        self.connectPort = Entry(self.connectFrame, textvariable = "9559")
+        self.connectButton = Button(self.connectFrame, text = "Connect")
         
         # Create control components
-        self.playButton = Button(self.window, text = unichr(9658))
-        self.stopButton = Button(self.window, text = unichr(9642))
-        self.progressBar = Progressbar(self.window, orient = HORIZONTAL, mode = "determinate")
+        self.controlsFrame = Frame(self.window)
+        self.videoFeed = PhotoImage(file="img/placeholder_image.gif")
+        self.videoFeedLabel = Label(self.controlsFrame, image = self.videoFeed)
+        self.playButton = Button(self.controlsFrame, text = "Play")
+        self.stopButton = Button(self.controlsFrame, text = "Stop")
+        self.progressBar = Progressbar(self.controlsFrame, orient = HORIZONTAL, mode = "determinate")
         
-        # Set component options0 
+        # Set component options
         self.window.wm_title("ShowRobbie")
-        self.window.minsize(width=512, height=512)
-        #self.window.resizable(width=False, height=False)
+        self.window.minsize(width=1024, height=728)
+        self.window.resizable(width=False, height=False)
         
         # Create array of available routines
         self.routines = glob.glob("Routines/*.py")
@@ -111,22 +121,27 @@ class ShowRobbieGui(object):
         self.window.rowconfigure(1, weight = 1)
 
         # Pack routines list
-        self.availableRoutinesLabel.grid(row = 0, column = 0, sticky = W)
-        self.availableRoutines.grid(row = 1, column = 0, rowspan = 4, 
-            sticky = N+W+S)
-        self.availableRoutinesScrollbar.grid(row = 1, column = 1, rowspan = 4, 
-            sticky = N+W+S)
+        self.availableRoutinesLabel.pack(side = TOP, fill = X)
+        self.availableRoutines.pack(side = LEFT, expand = True, fill = Y)
+        self.availableRoutinesScrollbar.pack(side = RIGHT, fill = Y)
+        
+        self.routinesFrame.grid(column = 0, row = 0, rowspan = 2, sticky = W+N+S)
         
         # Pack connection stuff
-        self.connectLabel.grid(row = 0, column = 1, sticky = W)
-        self.connectIP.grid(row = 1, column = 1, sticky = W)
-        self.connectPort.grid(row = 1, column = 2, sticky = W)
-        self.connectButton.grid(row = 1, column = 3, sticky = E)
+        self.connectLabel.pack(side = TOP, expand = True, fill = X)
+        self.connectIP.pack(side = LEFT)
+        self.connectPort.pack(side = LEFT)
+        self.connectButton.pack(side = LEFT)
+        #self.videoFeedLabel.pack(side = BOTTOM)
         
-        #Pack progress stuff
-        self.playButton.grid(row = 3, column = 1)
-        self.stopButton.grid(row = 3, column = 2)
-        self.progressBar.grid(row = 4, column = 1, rowspan = 2)
+        self.connectFrame.grid(column = 1, row = 0, sticky = N+E+W)
+        
+        # Pack progress stuff
+        self.progressBar.pack(side = BOTTOM, expand = True, fill = X)
+        self.playButton.pack(side = LEFT, fill = X)
+        self.stopButton.pack(side = RIGHT, fill = X)
+        
+        self.controlsFrame.grid(column = 1, row = 1, sticky = S+W+E)
         
     #def packAndConfigureWindow                              
     
