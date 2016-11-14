@@ -32,8 +32,6 @@ class customMotions():
         '''
         Default constructor
         '''
-        self.robotIP = "10.0.0.7"
-        self.robotPort = 9559
     #def __init__
     
     
