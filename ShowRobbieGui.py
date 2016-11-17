@@ -45,14 +45,22 @@ class ShowRobbieGui(object):
     connectPort = None
     connectButton = None
     
+    batteryFrame = None
+    videoFeed = None
+    videoFeedLabel = None
+    batteryLabel = None
     batteryBar = None
     
     controlsFrame = None
-    videoFeed = None
-    videoFeedLabel = None
     playButton = None
     stopButton = None
     progressBar = None
+
+    ipVar = None
+    portVar = None
+    progressVar = None
+    batteryVar = None
+    connected = False
     
     routines = {}
     routineFilesToIgnore = {
@@ -79,26 +87,44 @@ class ShowRobbieGui(object):
         self.availableRoutinesLabel = Label(self.routinesFrame, text="Routines")
         self.availableRoutinesScrollbar = Scrollbar(self.routinesFrame)
         self.availableRoutines = Listbox(self.routinesFrame, 
-            yscrollcommand = self.availableRoutinesScrollbar.set)
+            yscrollcommand = self.availableRoutinesScrollbar.set, width = 32)
         
         # Create connection components
         self.connectFrame = Frame(self.window)
         self.connectLabel = Label(self.connectFrame, text="Connection")
-        self.connectIP = Entry(self.connectFrame, textvariable = "10.0.0.7 ")
-        self.connectPort = Entry(self.connectFrame, textvariable = "9559")
+        self.ipVar = StringVar()
+        self.ipVar.set("10.0.0.7")
+        self.connectIP = Entry(self.connectFrame, textvariable = self.ipVar, 
+           width = 16)
+        self.portVar = IntVar()
+        self.portVar.set(9559)
+        self.connectPort = Entry(self.connectFrame, textvariable = self.portVar, 
+            width = 8)
         self.connectButton = Button(self.connectFrame, text = "Connect")
+        
+        # Create stats components (battery, video)
+        self.batteryFrame = Frame(self.window)
+        self.videoFeed = PhotoImage(master = self.batteryFrame, 
+            file="img/placeholder_image.gif")
+        self.videoFeedLabel = Label(self.batteryFrame, image = self.videoFeed)
+        self.batteryVar = DoubleVar()
+        self.batteryLabel = Label(self.batteryFrame, text="0%")
+        self.batteryBar = Progressbar(self.batteryFrame, orient = VERTICAL, 
+            mode = "determinate", variable = self.batteryVar, length = 30)
         
         # Create control components
         self.controlsFrame = Frame(self.window)
-        self.videoFeed = PhotoImage(file="img/placeholder_image.gif")
-        self.videoFeedLabel = Label(self.controlsFrame, image = self.videoFeed)
-        self.playButton = Button(self.controlsFrame, text = "Play")
-        self.stopButton = Button(self.controlsFrame, text = "Stop")
-        self.progressBar = Progressbar(self.controlsFrame, orient = HORIZONTAL, mode = "determinate")
+        self.playButton = Button(self.controlsFrame, text = "Run", 
+            state = DISABLED)
+        self.stopButton = Button(self.controlsFrame, text = "Stop",
+            state = DISABLED)
+        self.progressVariable = DoubleVar()
+        self.progressBar = Progressbar(self.controlsFrame, orient = HORIZONTAL, 
+           mode = "determinate", variable = self.progressVar, length = 600)
         
         # Set component options
         self.window.wm_title("ShowRobbie")
-        self.window.minsize(width=1024, height=728)
+        self.window.minsize(width=700, height=500)
         self.window.resizable(width=False, height=False)
         
         # Create array of available routines
@@ -125,25 +151,56 @@ class ShowRobbieGui(object):
         self.availableRoutines.pack(side = LEFT, expand = True, fill = Y)
         self.availableRoutinesScrollbar.pack(side = RIGHT, fill = Y)
         
-        self.routinesFrame.grid(column = 0, row = 0, rowspan = 2, sticky = W+N+S)
+        self.routinesFrame.grid(column = 0, row = 0, rowspan = 3, 
+            sticky = W+N+S, padx = (10, 0), pady = 10)
         
         # Pack connection stuff
         self.connectLabel.pack(side = TOP, expand = True, fill = X)
-        self.connectIP.pack(side = LEFT)
+        self.connectIP.pack(side = LEFT, padx = (0, 2))
         self.connectPort.pack(side = LEFT)
-        self.connectButton.pack(side = LEFT)
-        #self.videoFeedLabel.pack(side = BOTTOM)
+        self.connectButton.pack(side = LEFT, padx = (2, 0))
         
-        self.connectFrame.grid(column = 1, row = 0, sticky = N+E+W)
+        self.connectFrame.grid(column = 1, row = 0, sticky = N+S,
+           padx = (0, 10), pady = (10, 0))
         
-        # Pack progress stuff
-        self.progressBar.pack(side = BOTTOM, expand = True, fill = X)
-        self.playButton.pack(side = LEFT, fill = X)
-        self.stopButton.pack(side = RIGHT, fill = X)
+        # Pack stat stuff (battery, video)
+        self.videoFeedLabel.pack(side = TOP)
+        self.batteryBar.place(x = -25, y = 5, relx = 1.0, width = 20)
+        self.batteryLabel.place(x = -47, y = 10, relx = 1.0, width = 20)
         
-        self.controlsFrame.grid(column = 1, row = 1, sticky = S+W+E)
+        self.batteryFrame.grid(column = 1, row = 1,
+            padx = (0, 10), pady = 0)
         
-    #def packAndConfigureWindow                              
+        # Pack control stuff       
+        self.playButton.grid(row = 1, column = 0, sticky = E, pady = (0, 5),
+            padx = (0, 1))
+        self.stopButton.grid(row = 1, column = 1, sticky = W, pady = (0, 5),
+            padx = (1, 0))
+        self.progressBar.grid(row = 2, column = 0, columnspan = 2, sticky = E+W)
+        
+        self.controlsFrame.grid(column = 1, row = 2, sticky = S+N,
+           padx = (0, 10), pady = (0, 10))
+        
+    #def packAndConfigureWindow
+    
+    def clickPlay(self):
+        print "play"
+    #def clickPlay
+    
+    def clickStop(self):
+        print "stop"
+    #def clickStop
+    
+    def updateUi(self):
+        if self.connected:
+            print "connected"
+        else:
+            print "disconnected"
+    #def updateUi
+    
+    def updateImage(self):
+        print "updating image"
+    #def updateImage
     
     def main(self):
         print "heh"

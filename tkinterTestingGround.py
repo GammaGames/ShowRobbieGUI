@@ -1,6 +1,13 @@
 import Tkinter
-root = Tkinter.Tk(  )
-for r in range(3):
-    for c in range(4):
-        Tkinter.Label(root, text='R%s/C%s'%(r,c), borderwidth=1 ).grid(row=r,column=c)
-root.mainloop(  )
+
+# open a SPIDER image and convert to byte format    
+im = Image.open("img/placeholder_image.gif")
+
+root = Tkinter.Tk()  # A root window for displaying objects
+
+# Convert the Image object into a TkPhoto object
+tkimage = ImageTk.PhotoImage(im)
+
+Tkinter.Label(root, image=tkimage, text="Update User", compound=Tkinter.CENTER).pack() # Put it in the display window
+
+root.mainloop() # Start the GUI

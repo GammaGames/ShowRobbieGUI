@@ -29,9 +29,11 @@ class Routine(object):
     '''
     __metaclass__ = ABCMeta
     
+    progressVar = None
+    
     numberSteps = -1    
     currentStep = 0
-    
+        
     def __init__(self):
         '''
         Default constructor
@@ -55,7 +57,7 @@ class Routine(object):
     
     def getPercent(self):
         print(str(self.currentStep) + "," + str(self.numberSteps))
-        return self.currentStep / float(self.numberSteps)
+        return self.currentStep / float(self.numberSteps) * 100
     #def getPercent
     
 #class Routine
