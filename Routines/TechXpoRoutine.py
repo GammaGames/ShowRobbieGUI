@@ -25,7 +25,6 @@ from naoqi import ALProxy
 import Routine
 from Modules.CustomMotions import CustomMotions
 
-
 class TechXpoRoutine(Routine.Routine):
     '''
     classdocs
@@ -59,23 +58,24 @@ class TechXpoRoutine(Routine.Routine):
         motions = CustomMotions()
         speed = 1.0
         
-        self.currentStep = 1
+        self.currentStep = 0
         #self.autonomousLifeProxy.setState("solitary")
         motions.standUp(self.postureProxy, self.motionProxy, speed)
         
-        self.currentStep = 2
+        self.currentStep = 1
         async = True
-        motions.wave(self.motionProxy, async)        
+        motions.wave(self.motionProxy, async)
+        self.speechProxy.say("Hi there, I'm Robbie. I was built by the Aldebaran company in France, but currently I am the property of the Montana Tech Computer Science Department.")    
+        
+        self.currentStep = 2
+        self.speechProxy.say("This demonstration is a much shorter version of a performance for prospective visiting students that I have been programmed to deliver by the 2016 17 senior software engineering design project team, Jesse Lieberg and Logan Warner.")
+        self.speechProxy.say("One of them can show you some pictures of this performance after I sit back down. I hope you enjoy this year's Techxpo, thank you for listening.")
         
         self.currentStep = 3
-        self.speechProxy.say("Hello, I am Robbie. I'm a NAO robot.")
-        self.speechProxy.say("I'm designed and manufactured by the Aldebaran company in France, but all my present behaviors have been programmed as part of a Senior Software Engineering project.")
-        self.speechProxy.say("There's very little I can do without the programs that have designed and constructed by the Senior Software Engineering students here at Montana Tech.")
-        self.speechProxy.say("I'm afraid that programming me is not easy, but these students have been well equipped by their education here at Tech to deal with complex problems.")
-        
-        self.currentStep = 4
         motions.sitDown(self.postureProxy, self.motionProxy, speed)    
         #self.autonomousLifeProxy.setState("disabled")
+        
+        self.currentStep = 4
     #def run
 
     def stop(self):

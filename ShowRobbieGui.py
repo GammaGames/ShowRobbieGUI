@@ -67,6 +67,7 @@ class ShowRobbieGui(object):
     batteryVar = None
     connected = False
     
+    instance = None
     batteryProxy = None
     
     routines = {}
@@ -125,7 +126,7 @@ class ShowRobbieGui(object):
             state = DISABLED, command = self.clickPlay)
         self.stopButton = Button(self.controlsFrame, text = "Stop",
             state = DISABLED, command = self.clickStop)
-        self.progressVariable = DoubleVar()
+        self.progressVar = DoubleVar()
         self.progressBar = Progressbar(self.controlsFrame, orient = HORIZONTAL, 
            mode = "determinate", variable = self.progressVar, length = 600)
         
@@ -219,12 +220,19 @@ class ShowRobbieGui(object):
         print ("constructing " + script)
         class_ = getattr(Routines, script)
         class_ = getattr(class_, script)
-        instance = class_()
+        self.instance = class_()
         print ("connecting")
-        instance.connect(self.ipVar.get(), self.portVar.get())
+        self.instance.connect(self.ipVar.get(), self.portVar.get())
         print ("running " + script)
-        t = threading.Thread(target = instance.run)
-        t.start()        
+        t = threading.Thread(target = self.instance.run)
+        t.start()
+        
+        sleepTime = 1.0
+        t1 = threading.Timer(sleepTime, self.updatePercentage)
+        t1.start()
+        
+        self.playButton.config(state = DISABLED)
+        self.stopButton.config(state = NORMAL)
     #def clickPlay
     
     def clickStop(self):
@@ -250,6 +258,11 @@ class ShowRobbieGui(object):
     def updateImage(self):
         print "updating image"
     #def updateImage
+    
+    def updatePercentage(self):
+        self.progressVar = self.instance.getPercent()
+        self.progressBar.step(self.progressVar)
+    #def updatePercentage
     
     def main(self):
         print "heh"

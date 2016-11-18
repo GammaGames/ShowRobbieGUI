@@ -56,7 +56,7 @@ class Routine(object):
     #def stop
     
     def getPercent(self):
-        print(str(self.currentStep) + "," + str(self.numberSteps))
+        print str(self.currentStep / float(self.numberSteps) * 100)
         return self.currentStep / float(self.numberSteps) * 100
     #def getPercent
     
