@@ -1,7 +1,7 @@
 # *************************************************************
 # PROJECT:    ShowRobbieGUI
 #
-# FILE:       Module.py
+# FILE:       CustomMotions.py
 #
 # DEVELOPMENT ENVIRONMENTS:
 # Eclipse Neon.1 with PyDev  with Python 2.7.11
@@ -12,7 +12,7 @@
 # HISTORY:
 # Date        Author            Description
 # ====        ======            ===========
-# 11/2/16     Jesse Lieberg      Initial Creation
+# 11/2/16     Jesse Lieberg     Initial Creation
 #
 # DESCRIPTION
 # 
@@ -23,7 +23,7 @@
 # -------------------
 import math
 
-class customMotions():
+class CustomMotions():
     '''
     
     '''
@@ -136,4 +136,4 @@ class customMotions():
         speechProxy.say("balalalalalala")
     #def fistBump
     
-#class Posture
+#class CustomMotions

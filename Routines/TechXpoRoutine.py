@@ -23,7 +23,7 @@
 # -------------------
 from naoqi import ALProxy
 import Routine
-from Modules.customMotions import customMotions
+from Modules.CustomMotions import CustomMotions
 
 
 class TechXpoRoutine(Routine.Routine):
@@ -56,7 +56,7 @@ class TechXpoRoutine(Routine.Routine):
     #def connect
 
     def run(self):
-        motions = customMotions()
+        motions = CustomMotions()
         speed = 1.0
         
         self.currentStep = 1

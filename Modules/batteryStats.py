@@ -1,7 +1,7 @@
 # *************************************************************
 # PROJECT:    ShowRobbieGUI
 #
-# FILE:       batteryStats.py
+# FILE:       BatteryStats.py
 #
 # DEVELOPMENT ENVIRONMENTS:
 # Eclipse Neon.1 with PyDev  with Python 2.7.11
@@ -21,11 +21,29 @@
 # -------------------
 # Application imports
 # -------------------
-import math
+from naoqi import ALProxy
 
-class batteryStats():
+class BatteryStats():
     '''
     
     '''
+    robotIP = "10.0.0.7"
+    robotPort = 9559
     
-#class Posture
+    batteryProxy = None
+    
+    
+    def __init__(self):
+        '''
+        '''
+    #def __init__
+    
+    def connect(self, ip, port):
+        self.robotIP = ip
+        self.robotPort = port
+        self.batteryProxy = ALProxy("ALBattery", self.robotIP, self.robotPort)
+        
+    def getBatteryPercentage(self):
+        return self.batteryProxy.getBatteryCharge()
+        
+#class BatteryStats

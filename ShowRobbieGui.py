@@ -23,9 +23,14 @@
 # -------------------
 import os
 import glob
+import threading
+
 from Tkinter import *
 from ttk import *
-from Routines import Routine
+
+import Routines
+from Routines import Routine, TechXpoRoutine
+from Modules.BatteryStats import BatteryStats
 
 class ShowRobbieGui(object):
     '''
@@ -62,15 +67,17 @@ class ShowRobbieGui(object):
     batteryVar = None
     connected = False
     
+    batteryProxy = None
+    
     routines = {}
     routineFilesToIgnore = {
-        "Routine.py",
-        "__init__.py"
+        "Routine",
+        "__init__"
         }
 
     def __init__(self):
         '''
-        '''
+        '''        
         self.createComponents()
         self.configureWindow()
         self.window.mainloop()
@@ -100,7 +107,7 @@ class ShowRobbieGui(object):
         self.portVar.set(9559)
         self.connectPort = Entry(self.connectFrame, textvariable = self.portVar, 
             width = 8)
-        self.connectButton = Button(self.connectFrame, text = "Connect")
+        self.connectButton = Button(self.connectFrame, text = "Connect", command = self.clickConnect)
         
         # Create stats components (battery, video)
         self.batteryFrame = Frame(self.window)
@@ -115,9 +122,9 @@ class ShowRobbieGui(object):
         # Create control components
         self.controlsFrame = Frame(self.window)
         self.playButton = Button(self.controlsFrame, text = "Run", 
-            state = DISABLED)
+            state = DISABLED, command = self.clickPlay)
         self.stopButton = Button(self.controlsFrame, text = "Stop",
-            state = DISABLED)
+            state = DISABLED, command = self.clickStop)
         self.progressVariable = DoubleVar()
         self.progressBar = Progressbar(self.controlsFrame, orient = HORIZONTAL, 
            mode = "determinate", variable = self.progressVar, length = 600)
@@ -129,7 +136,7 @@ class ShowRobbieGui(object):
         
         # Create array of available routines
         self.routines = glob.glob("Routines/*.py")
-        self.routines = [os.path.split(p)[1] for p in self.routines]
+        self.routines = [os.path.split(p)[1][:-3] for p in self.routines]
         
         ignoreFiles = ""
         for filename in self.routineFilesToIgnore:
@@ -183,8 +190,41 @@ class ShowRobbieGui(object):
         
     #def packAndConfigureWindow
     
+    def clickConnect(self):
+        try:
+            self.batteryProxy = BatteryStats()
+            self.ipVar.set(self.connectIP.get())
+            self.portVar.set(int(self.connectPort.get()))
+            print "connecting"
+            self.batteryProxy.connect(self.ipVar.get(), self.portVar.get())
+            self.connected = True
+            print "updating ui"
+            t = threading.Thread(target = self.updateUi)
+            t.start()
+        except  Exception:
+            self.connected = False
+    #def clickConnect
+    
+    def clickDisconnect(self):
+        print "disconnecting"
+        self.batteryProxy = None
+        self.connected = False
+        print "updating ui"
+        t = threading.Thread(target = self.updateUi)
+        t.start()
+    #def clickDisconnect
+    
     def clickPlay(self):
-        print "play"
+        script = self.availableRoutines.get(self.availableRoutines.curselection())
+        print ("constructing " + script)
+        class_ = getattr(Routines, script)
+        class_ = getattr(class_, script)
+        instance = class_()
+        print ("connecting")
+        instance.connect(self.ipVar.get(), self.portVar.get())
+        print ("running " + script)
+        t = threading.Thread(target = instance.run)
+        t.start()        
     #def clickPlay
     
     def clickStop(self):
@@ -193,9 +233,18 @@ class ShowRobbieGui(object):
     
     def updateUi(self):
         if self.connected:
-            print "connected"
+            self.connectButton.config(text = "Disconnect")
+            self.connectButton.config(command = self.clickDisconnect)
+            self.connectIP.config(state = DISABLED)
+            self.connectPort.config(state = DISABLED)
+            self.playButton.config(state = NORMAL)
+            self.batteryVar = self.batteryProxy.getBatteryPercentage()
         else:
-            print "disconnected"
+            self.connectButton.config(text = "Connect")
+            self.connectButton.config(command = self.clickConnect)
+            self.connectIP.config(state = NORMAL)
+            self.connectPort.config(state = NORMAL)
+            self.playButton.config(state = DISABLED)
     #def updateUi
     
     def updateImage(self):
