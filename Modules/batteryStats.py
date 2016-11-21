@@ -32,7 +32,6 @@ class BatteryStats():
     
     batteryProxy = None
     
-    
     def __init__(self):
         '''
         '''

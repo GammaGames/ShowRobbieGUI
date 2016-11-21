@@ -63,7 +63,12 @@ class TechXpoRoutine(Routine.Routine):
             return
         
         self.currentStep = 0
-        #self.autonomousLifeProxy.setState("solitary")
+        try:
+            self.autonomousLifeProxy.setState("solitary")
+        except Exception, e:
+            # Intentionally left empty to let the routine run on an
+            # emulated NAO bot through Choreographe
+            pass
         motions.standUp(self.postureProxy, self.motionProxy, speed)
 
         self.currentStep = 1
@@ -82,8 +87,13 @@ class TechXpoRoutine(Routine.Routine):
             return
         
         self.currentStep = 3
-        motions.sitDown(self.postureProxy, self.motionProxy, speed)    
-        #self.autonomousLifeProxy.setState("disabled")
+        motions.sitDown(self.postureProxy, self.motionProxy, speed)   
+        try:
+            self.autonomousLifeProxy.setState("disabled")
+        except Exception, e:
+            # Intentionally left empty to let the routine run on an
+            # emulated NAO bot through Choreographe 
+            pass
     
         if not self.running:
             return
