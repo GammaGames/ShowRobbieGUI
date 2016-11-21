@@ -24,12 +24,13 @@
 import os
 import glob
 import threading
+import imp
 
 from Tkinter import *
 from ttk import *
 
 import Routines
-from Routines import Routine, TechXpoRoutine
+from Routines import Routine
 from Modules.BatteryStats import BatteryStats
 
 class ShowRobbieGui(object):
@@ -78,11 +79,10 @@ class ShowRobbieGui(object):
 
     def __init__(self):
         '''
-        '''        
+        '''
         self.createComponents()
         self.configureWindow()
-        self.window.mainloop()
-        
+        self.window.mainloop()   
     #def __init__
     
     def createComponents(self):
@@ -216,16 +216,16 @@ class ShowRobbieGui(object):
     #def clickDisconnect
     
     def clickPlay(self):
-        script = self.availableRoutines.get(self.availableRoutines.curselection())
-        print ("constructing " + script)
-        class_ = getattr(Routines, script)
-        class_ = getattr(class_, script)
-        self.instance = class_()
+        script = self.availableRoutines.get(ACTIVE)
+        print ("constructing " + script)      
+        src = imp.load_source("Routines", "Routines/" + script + ".py")
+        class_ = getattr(src, script)
+        self.instance = class_()        
         print ("connecting")
         self.instance.connect(self.ipVar.get(), self.portVar.get())
         print ("running " + script)
         t = threading.Thread(target = self.instance.run)
-        t.start()
+        t.start()  
         
         sleepTime = 1.0
         t1 = threading.Timer(sleepTime, self.updatePercentage)
