@@ -111,7 +111,8 @@ class ShowRobbieGui(object):
         self.portVar.set(9559)
         self.connectPort = Entry(self.connectFrame, textvariable = self.portVar, 
             width = 8)
-        self.connectButton = Button(self.connectFrame, text = "Connect", command = self.clickConnect)
+        self.connectButton = Button(self.connectFrame, text = "Connect", 
+            command = self.clickConnect)
         
         # Create stats components (battery, video)
         self.batteryFrame = Frame(self.window)
@@ -119,7 +120,8 @@ class ShowRobbieGui(object):
             file="img/placeholder_image.gif")
         self.videoFeedLabel = Label(self.batteryFrame, image = self.videoFeed)
         self.batteryVar = DoubleVar()
-        self.batteryLabel = Label(self.batteryFrame, text="0%")
+        self.batteryLabel = Label(self.batteryFrame, text="0", 
+            justify = RIGHT)
         self.batteryBar = Progressbar(self.batteryFrame, orient = VERTICAL, 
             mode = "determinate", variable = self.batteryVar, length = 30)
         
@@ -255,6 +257,7 @@ class ShowRobbieGui(object):
     
     def updateBattery(self):
         self.batteryVar = self.batteryProxy.getBatteryPercentage()
+        self.batteryLabel.config(text = str(self.batteryVar) + "%")
         self.batteryBar["value"] = self.batteryVar
     #def updateBattery
     
