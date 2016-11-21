@@ -12,7 +12,7 @@
 # HISTORY:
 # Date        Author            Description
 # ====        ======            ===========
-# 11/2/16     Jesse Lieberg      Initial Creation
+# 11/2/16     Jesse Lieberg     Initial Creation
 #
 # DESCRIPTION
 # 

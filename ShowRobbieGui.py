@@ -12,16 +12,16 @@
 # HISTORY:
 # Date        Author            Description
 # ====        ======            ===========
-# 11/2/16     Jesse Lieberg      Initial Creation
+# 11/2/16     Jesse Lieberg     Initial Creation
+# Check githut commit history
 #
 # DESCRIPTION
-# 
+# https://github.com/GammaGames/ShowRobbieGUI
 # **************************************************************
 
 # -------------------
 # Application imports
 # -------------------
-import atexit
 import os
 import glob
 import threading
