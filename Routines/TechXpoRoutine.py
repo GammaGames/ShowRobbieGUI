@@ -55,31 +55,41 @@ class TechXpoRoutine(Routine.Routine):
     #def connect
 
     def run(self):
+        self.running = True
         motions = CustomMotions()
         speed = 1.0
+        
+        if not self.running:
+            return
         
         self.currentStep = 0
         #self.autonomousLifeProxy.setState("solitary")
         motions.standUp(self.postureProxy, self.motionProxy, speed)
-        
+
         self.currentStep = 1
         async = True
         motions.wave(self.motionProxy, async)
         self.speechProxy.say("Hi there, I'm Robbie. I was built by the Aldebaran company in France, but currently I am the property of the Montana Tech Computer Science Department.")    
+            
+        if not self.running:
+            return
         
         self.currentStep = 2
         self.speechProxy.say("This demonstration is a much shorter version of a performance for prospective visiting students that I have been programmed to deliver by the 2016 17 senior software engineering design project team, Jesse Lieberg and Logan Warner.")
         self.speechProxy.say("One of them can show you some pictures of this performance after I sit back down. I hope you enjoy this year's Techxpo, thank you for listening.")
         
+        if not self.running:
+            return
+        
         self.currentStep = 3
         motions.sitDown(self.postureProxy, self.motionProxy, speed)    
         #self.autonomousLifeProxy.setState("disabled")
+    
+        if not self.running:
+            return
         
         self.currentStep = 4
+        self.running = False
     #def run
-
-    def stop(self):
-        return
-    #def stop
 
 #class TechXpoRoutine

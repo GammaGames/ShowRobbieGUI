@@ -21,10 +21,12 @@
 # -------------------
 # Application imports
 # -------------------
+import atexit
 import os
 import glob
 import threading
 import imp
+import time
 
 from Tkinter import *
 from ttk import *
@@ -68,8 +70,9 @@ class ShowRobbieGui(object):
     batteryVar = None
     connected = False
     
-    instance = None
     batteryProxy = None
+    routine = None
+    routineThread = None
     
     routines = {}
     routineFilesToIgnore = {
@@ -220,53 +223,72 @@ class ShowRobbieGui(object):
         print ("constructing " + script)      
         src = imp.load_source("Routines", "Routines/" + script + ".py")
         class_ = getattr(src, script)
-        self.instance = class_()        
+        self.routine = class_()        
         print ("connecting")
-        self.instance.connect(self.ipVar.get(), self.portVar.get())
+        self.routine.connect(self.ipVar.get(), self.portVar.get())
         print ("running " + script)
-        t = threading.Thread(target = self.instance.run)
-        t.start()  
+        self.routineThread = threading.Thread(target = self.routine.run)
+        self.routineThread.start()  
         
-        sleepTime = 1.0
-        t1 = threading.Timer(sleepTime, self.updatePercentage)
-        t1.start()
-        
-        self.playButton.config(state = DISABLED)
-        self.stopButton.config(state = NORMAL)
+        t = threading.Thread(target = self.updateUi)
+        t.start()
     #def clickPlay
     
     def clickStop(self):
-        print "stop"
+        self.routineThread = None
+        self.routine.stop()
+        self.routine = None
+        self.progressBar["value"] = 0.0
+        t = threading.Thread(target = self.updateUi)
+        t.start()
     #def clickStop
     
     def updateUi(self):
-        if self.connected:
-            self.connectButton.config(text = "Disconnect")
-            self.connectButton.config(command = self.clickDisconnect)
-            self.connectIP.config(state = DISABLED)
-            self.connectPort.config(state = DISABLED)
-            self.playButton.config(state = NORMAL)
-            self.batteryVar = self.batteryProxy.getBatteryPercentage()
-        else:
-            self.connectButton.config(text = "Connect")
-            self.connectButton.config(command = self.clickConnect)
-            self.connectIP.config(state = NORMAL)
-            self.connectPort.config(state = NORMAL)
-            self.playButton.config(state = DISABLED)
+        self.updateConnect()
+        self.updateControls()
+        self.updateBattery()
     #def updateUi
     
     def updateImage(self):
         print "updating image"
     #def updateImage
     
-    def updatePercentage(self):
-        self.progressVar = self.instance.getPercent()
-        self.progressBar.step(self.progressVar)
-    #def updatePercentage
+    def updateBattery(self):
+        self.batteryVar = self.batteryProxy.getBatteryPercentage()
+        self.batteryBar["value"] = self.batteryVar
+    #def updateBattery
     
-    def main(self):
-        print "heh"
-    #def main
+    def updateConnect(self):
+        if self.connected:
+            self.connectButton.config(text = "Disconnect")
+            self.connectButton.config(command = self.clickDisconnect)
+            self.connectIP.config(state = DISABLED)
+            self.connectPort.config(state = DISABLED)
+        else:
+            self.connectButton.config(text = "Connect")
+            self.connectButton.config(command = self.clickConnect)
+            self.connectIP.config(state = NORMAL)
+            self.connectPort.config(state = NORMAL)
+    #def updateConnect
+    
+    def updateControls(self):
+        if self.routineThread is not None:
+            self.playButton.config(state = DISABLED)
+            self.stopButton.config(state = NORMAL)
+        else:
+            self.playButton.config(state = NORMAL)
+            self.stopButton.config(state = DISABLED)
+        self.updatePercentage()
+    #def updateControls
+    
+    def updatePercentage(self):
+        while self.routineThread is not None:
+            self.progressVar = self.routine.getPercent()
+            self.progressBar["value"] = self.progressVar
+            if not self.routine.running:
+                self.clickStop()
+            time.sleep(1.0)
+    #def updatePercentage
 
 #class showRobbieGui
 

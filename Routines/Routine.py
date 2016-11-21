@@ -33,6 +33,7 @@ class Routine(object):
     
     numberSteps = -1    
     currentStep = 0
+    running = False
         
     def __init__(self):
         '''
@@ -50,13 +51,11 @@ class Routine(object):
         return
     #def run
     
-    @abstractmethod
     def stop(self):
-        return
+        self.running = False
     #def stop
     
     def getPercent(self):
-        print str(self.currentStep / float(self.numberSteps) * 100)
         return self.currentStep / float(self.numberSteps) * 100
     #def getPercent
     
