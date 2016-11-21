@@ -272,6 +272,14 @@ class ShowRobbieGui(object):
     #def updateConnect
     
     def updateControls(self):
+        if self.connected:
+            self.updateControlButtons()
+        else:
+            self.playButton.config(state = DISABLED)
+            self.stopButton.config(state = DISABLED)
+    #def disableControls
+    
+    def updateControlButtons(self):
         if self.routineThread is not None:
             self.playButton.config(state = DISABLED)
             self.stopButton.config(state = NORMAL)
